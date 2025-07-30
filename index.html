@@ -1,0 +1,106 @@
+<!-- FULL FIXED CODE WITH SEARCH + FEEDBACKS TABLE -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STI Event Attendance Monitor</title>
+    <link rel="icon" type="image/x-icon" href="https://cdn-icons-png.flaticon.com/512/2620/2620267.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <link rel="stylesheet" href="styles/css-main.css">
+</head>
+
+<body>
+    <div id="notification" class="notification">Wrong password or email</div>
+
+    <div id="loginSection" class="login-form">
+        <h2>Admin access login</h2>
+        <input type="email" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button onclick="login()">Login</button>
+    </div>
+
+    <div id="loadingSpinner" class="hidden">
+        <h2>Logging in... Please wait</h2>
+        <div class="spinner"></div>
+    </div>
+
+    <div id="dashboard" class="container hidden">
+        <h1>STI LIBRARY - Admin Dashboard</h1>
+        <div class="card">
+            <div id="announcementCard" class="card"
+                style="background-color: rgba(255, 215, 0, 0.1); border-left: 6px solid #fa9600;">
+                <h2 style="margin-top: -3px;">📢 Announcement</h2>
+                <p><strong>Name:</strong> <span id="announceName" style="font-size: 21px;">Loading...</span></p>
+                <p><strong>Role:</strong> <span id="announceRole" style="font-size: 21px;">Loading...</span></p>
+                <p><strong>Description:</strong> <span id="announceDesc" style="font-size: 21px;">Loading...</span></p>
+            </div>
+
+            <h2>Attendance List</h2>
+
+            <div style="display: flex; justify-content: center; margin-bottom: 10px;">
+                <input type="text" id="searchInput" placeholder="Search by Name, ID, Strand, or Grade" style="
+        width: 100%;
+        max-width: 500px;
+        padding: 12px;
+        border-radius: 8px;
+        border: none;
+        font-size: 16px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        font-family: 'Outfit', sans-serif;
+      ">
+            </div>
+
+            <p id="totalLoggedIn" style="margin-bottom: 10px; font-weight: bold; font-size: 16px;">
+                Total Logged-in Students: 0
+            </p>
+
+            <table id="attendanceTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Student ID</th>
+                        <th>Strand</th>
+                        <th>Grade</th>
+                        <th>Check-In</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div style="text-align: center; margin-top: 10px;">
+                <button id="seeMoreBtn" class="hidden">🔽 See More</button>
+            </div>
+
+        </div>
+
+        <div class="card">
+            <h2>Student Feedbacks</h2>
+            <table id="feedbackTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Student Number</th>
+                        <th>Subject</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div style="text-align: center; margin-top: 10px;">
+                <button id="seeMoreFeedbackBtn" class="hidden">🔽 See More</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="scripts/script.js" defer></script>
+
+</body>
+
+</html>
