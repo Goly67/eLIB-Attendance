@@ -121,7 +121,7 @@
 
                 allStudents.sort((a, b) => b.data.loginTime - a.data.loginTime);
 
-                totalDisplay.textContent = `Total Logged-in Students: ${loggedInCount}`;
+                totalDisplay.textContent = `Total Logged-in Students: ${allStudents.length}`;
                 renderFilteredTable(document.getElementById("searchInput").value.toLowerCase());
             });
         }
