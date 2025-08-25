@@ -67,10 +67,47 @@ function showNotification(msg) {
     }, 3000);
 }
 
+let loginAttempts = 0;
+const MAX_ATTEMPTS = 5;
+
+// Handle Enter and ArrowDown
+email.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === "ArrowDown") {
+        e.preventDefault();
+        if (!email.value.trim()) {
+            showNotification("Please fill up the form");
+            return;
+        }
+        password.focus();
+    }
+});
+
+password.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        if (!password.value.trim() || !email.value.trim()) {
+            showNotification("Please fill up the form");
+            return;
+        }
+        login();
+    }
+});
+
 function login() {
     const emailVal = email.value.trim();
     const passwordVal = password.value.trim();
-    if (!emailVal || !passwordVal) return;
+
+    if (!emailVal || !passwordVal) {
+        showNotification("Please fill up the form");
+        return;
+    }
+
+    if (loginAttempts >= MAX_ATTEMPTS) {
+        showNotification("Maximum login attempts reached!");
+        email.disabled = true;
+        password.disabled = true;
+        return;
+    }
 
     firebase.auth().signInWithEmailAndPassword(emailVal, passwordVal)
         .then(() => {
@@ -84,8 +121,6 @@ function login() {
             setTimeout(() => {
                 document.getElementById("loadingSpinner").classList.add("hidden");
                 document.getElementById("dashboard").classList.remove("hidden");
-
-                // ✅ Always start listeners after login
                 startAttendanceListener();
                 loadFeedbacks();
                 startAnnouncementListener();
@@ -93,10 +128,13 @@ function login() {
 
         })
         .catch(() => {
-            showNotification("Wrong password or email");
+            loginAttempts++;
+            showNotification(`Wrong password or email. Attempts left: ${MAX_ATTEMPTS - loginAttempts}`);
+            email.value = "";
+            password.value = "";
+            email.focus();
         });
 }
-
 
 let allStudents = [];
 
