@@ -84,9 +84,11 @@ function login() {
             setTimeout(() => {
                 document.getElementById("loadingSpinner").classList.add("hidden");
                 document.getElementById("dashboard").classList.remove("hidden");
+
+                // ✅ Always start listeners after login
                 startAttendanceListener();
                 loadFeedbacks();
-                loadAnnouncement(); // 👈 here
+                startAnnouncementListener();
             }, 2000);
 
         })
@@ -94,6 +96,7 @@ function login() {
             showNotification("Wrong password or email");
         });
 }
+
 
 let allStudents = [];
 
