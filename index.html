@@ -1,4 +1,3 @@
-<!-- FULL FIXED CODE WITH SEARCH + FEEDBACKS TABLE -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,10 +14,10 @@
 </head>
 
 <body>
-    <div id="notification" class="notification">Wrong password or email</div>
+    <div id="notification" class="notification">...</div>
 
     <div id="loginSection" class="login-form">
-        <h2>Admin access login</h2>
+        <h2>Admin Access Login</h2>
         <input type="email" id="email" placeholder="Email" required />
         <input type="password" id="password" placeholder="Password" required />
         <button onclick="login()">Login</button>
@@ -31,70 +30,91 @@
 
     <div id="dashboard" class="container hidden">
         <h1>STI LIBRARY - Admin Dashboard</h1>
-        <div class="card">
-            <div id="announcementCard" class="card"
-                style="background-color: rgba(255, 215, 0, 0.1); border-left: 6px solid #fa9600;">
-                <h2 style="margin-top: -3px;">📢 Announcement</h2>
-                <p><strong>Name:</strong> <span id="announceName" style="font-size: 21px;">Loading...</span></p>
-                <p><strong>Role:</strong> <span id="announceRole" style="font-size: 21px;">Loading...</span></p>
-                <p><strong>Description:</strong> <span id="announceDesc" style="font-size: 21px;">Loading...</span></p>
+        
+        <!-- Added announcement card with better styling -->
+        <div id="announcementCard" class="announcement-card hidden">
+            <div class="announcement-header">
+                <span class="announcement-icon">📢</span>
+                <h3>Announcement</h3>
             </div>
-
-            <h2>Attendance List</h2>
-
-            <div style="display: flex; justify-content: center; margin-bottom: 10px;">
-                <input type="text" id="searchInput" placeholder="Search by Name, ID, Strand, or Grade" style="
-        width: 100%;
-        max-width: 500px;
-        padding: 12px;
-        border-radius: 8px;
-        border: none;
-        font-size: 16px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        font-family: 'Outfit', sans-serif;
-      ">
+            <div class="announcement-content">
+                <p><strong>Name:</strong> <span id="announceName">Loading...</span></p>
+                <p><strong>Role:</strong> <span id="announceRole">Loading...</span></p>
+                <p><strong>Description:</strong> <span id="announceDesc">Loading...</span></p>
             </div>
-
-            <p id="totalLoggedIn" style="margin-bottom: 10px; font-weight: bold; font-size: 16px;">
-                Total Logged-in Students: 0
-            </p>
-
-            <table id="attendanceTable">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Student ID</th>
-                        <th>Strand</th>
-                        <th>Grade</th>
-                        <th>Check-In</th>
-                        <th>Check-Out</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <div style="text-align: center; margin-top: 10px;">
-                <button id="seeMoreBtn" class="hidden">🔽 See More</button>
-            </div>
-
         </div>
 
-        <div class="card">
+        <!-- Added search bar at the top -->
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="🔍 Search by Name, ID, Strand, or Grade" class="search-input">
+        </div>
+
+        <!-- Added statistics section with cards -->
+        <div class="stats-section">
+    <h2>Attendance Statistics</h2>
+
+    <!-- Grade / Year group -->
+    <h3>By Grade Level / Year</h3>
+    <div class="stats-grid" id="gradeStatsGrid"  style="margin-bottom: 3vh;"></div>
+
+    <hr class="divider"/>
+
+    <!-- Strand / Course group -->
+    <h3>By Strand / Course</h3>
+    <div class="stats-grid" id="strandStatsGrid"></div>
+</div>
+
+        <!-- Enhanced attendance list section -->
+        <div class="attendance-section">
+            <h2>Student Attendance List</h2>
+            
+            <div class="attendance-info">
+                <p id="totalLoggedIn">Total Logged-in Students: 0</p>
+            </div>
+
+            <div class="table-container">
+                <table id="attendanceTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Student ID</th>
+                            <th>Strand</th>
+                            <th>Grade</th>
+                            <th>Check-In</th>
+                            <th>Check-Out</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <div class="button-container">
+                <button id="seeMoreBtn" class="see-more-btn hidden">🔽 See More</button>
+            </div>
+        </div>
+
+        <!-- Enhanced feedback section -->
+        <div class="feedback-section">
             <h2>Student Feedbacks</h2>
-            <table id="feedbackTable">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Student Number</th>
-                        <th>Subject</th>
-                        <th>Description</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <div style="text-align: center; margin-top: 10px;">
-                <button id="seeMoreFeedbackBtn" class="hidden" style="font-family: 'Outfit', sans-serif; font-weight: 600;">🔽 See More</button>
+            <div class="table-container">
+                <table id="feedbackTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Student Number</th>
+                            <th>Subject</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <div class="button-container">
+                <button id="seeMoreFeedbackBtn" class="see-more-btn hidden">🔽 See More</button>
             </div>
         </div>
     </div>
