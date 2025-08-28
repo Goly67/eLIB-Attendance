@@ -17,92 +17,92 @@ const LOGIN_KEY = 'lastLoginTime';
 
 // Define all strands / courses
 const STRANDS = [
-  "CA - Culinary Arts",
-  "GAS - General Academic",
-  "HUMSS - Humanities and Social Sciences",
-  "ITMAWD - IT in Mobile App and Web Development",
-  "STEM - Science, Technology, Engineering, and Mathematics",
-  "TO - Tourism Operations",
-  "BSHM - Bachelor of Science in Hospitality Management",
-  "BSCPE - Bachelor of Science in Computer Engineering",
-  "BSIT - Bachelor of Science in Information Technology"
+    "CA - Culinary Arts",
+    "GAS - General Academic",
+    "HUMSS - Humanities and Social Sciences",
+    "ITMAWD - IT in Mobile App and Web Development",
+    "STEM - Science, Technology, Engineering, and Mathematics",
+    "TO - Tourism Operations",
+    "BSHM - Bachelor of Science in Hospitality Management",
+    "BSCPE - Bachelor of Science in Computer Engineering",
+    "BSIT - Bachelor of Science in Information Technology"
 ];
 
 function renderStatistics(filteredStudents) {
-  const gradeGrid = document.getElementById("gradeStatsGrid");
-  const strandGrid = document.getElementById("strandStatsGrid");
+    const gradeGrid = document.getElementById("gradeStatsGrid");
+    const strandGrid = document.getElementById("strandStatsGrid");
 
-  // clear before render
-  gradeGrid.innerHTML = "";
-  strandGrid.innerHTML = "";
+    // clear before render
+    gradeGrid.innerHTML = "";
+    strandGrid.innerHTML = "";
 
-  // initialize counts
-  const strandCounts = {};
-  STRANDS.forEach(strand => strandCounts[strand] = 0);
+    // initialize counts
+    const strandCounts = {};
+    STRANDS.forEach(strand => strandCounts[strand] = 0);
 
-  const gradeCounts = { "G11": 0, "G12": 0, "College": 0 };
+    const gradeCounts = { "G11": 0, "G12": 0, "College": 0 };
 
-  // count students
-  filteredStudents.forEach(({ data }) => {
-    // Count by strand
-    if (strandCounts.hasOwnProperty(data.strand)) {
-      strandCounts[data.strand]++;
-    }
+    // count students
+    filteredStudents.forEach(({ data }) => {
+        // Count by strand
+        if (strandCounts.hasOwnProperty(data.strand)) {
+            strandCounts[data.strand]++;
+        }
 
-    // Count by grade level (normalize input)
-    if (data.grade) {
-      const g = data.grade.toString().toLowerCase();
+        // Count by grade level (normalize input)
+        if (data.grade) {
+            const g = data.grade.toString().toLowerCase();
 
-      if (g.includes("11")) {
-        gradeCounts["G11"]++;
-      } else if (g.includes("12")) {
-        gradeCounts["G12"]++;
-      } else if (
-        g.includes("1st") || g.includes("first") ||
-        g.includes("2nd") || g.includes("second") ||
-        g.includes("3rd") || g.includes("third") ||
-        g.includes("4th") || g.includes("fourth")
-      ) {
-        gradeCounts["College"]++;
-      }
-    }
-  });
+            if (g.includes("11")) {
+                gradeCounts["G11"]++;
+            } else if (g.includes("12")) {
+                gradeCounts["G12"]++;
+            } else if (
+                g.includes("1st") || g.includes("first") ||
+                g.includes("2nd") || g.includes("second") ||
+                g.includes("3rd") || g.includes("third") ||
+                g.includes("4th") || g.includes("fourth")
+            ) {
+                gradeCounts["College"]++;
+            }
+        }
+    });
 
-  // total students card (goes on top with grades)
-  const total = filteredStudents.length;
-  const totalCard = document.createElement("div");
-  totalCard.className = "stat-card";
-  totalCard.innerHTML = `
+    // total students card (goes on top with grades)
+    const total = filteredStudents.length;
+    const totalCard = document.createElement("div");
+    totalCard.className = "stat-card";
+    totalCard.innerHTML = `
     <div class="stat-number">${total}</div>
     <div class="stat-label">Total Students</div>
   `;
-  gradeGrid.appendChild(totalCard);
+    gradeGrid.appendChild(totalCard);
 
-  // Grade-level summary cards
-  Object.keys(gradeCounts).forEach(level => {
-    const count = gradeCounts[level];
-    const percent = total > 0 ? ((count / total) * 100).toFixed(1) + "%" : "0%";
-    const card = document.createElement("div");
-    card.className = "stat-card grade-card";
-    card.innerHTML = `
+    // Grade-level summary cards
+    Object.keys(gradeCounts).forEach(level => {
+        const count = gradeCounts[level];
+        const percent = total > 0 ? ((count / total) * 100).toFixed(1) + "%" : "0%";
+        const card = document.createElement("div");
+        card.className = "stat-card grade-card";
+        card.innerHTML = `
       <div class="stat-number">${count}</div>
       <div class="stat-label">${level} (${percent})</div>
     `;
-    gradeGrid.appendChild(card);
-  });
+        gradeGrid.appendChild(card);
+    });
 
-  // Strand summary cards (below)
-  STRANDS.forEach(strand => {
-    const count = strandCounts[strand];
-    const percent = total > 0 ? ((count / total) * 100).toFixed(1) + "%" : "0%";
-    const card = document.createElement("div");
-    card.className = "stat-card";
-    card.innerHTML = `
+    // Strand summary cards (below)
+    STRANDS.forEach(strand => {
+        const count = strandCounts[strand];
+        const percent = total > 0 ? ((count / total) * 100).toFixed(1) + "%" : "0%";
+        const card = document.createElement("div");
+        card.className = "stat-card";
+        card.innerHTML = `
       <div class="stat-number">${count}</div>
       <div class="stat-label">${strand} (${percent})</div>
     `;
-    strandGrid.appendChild(card);
-  });
+        strandGrid.appendChild(card);
+    });
 }
 
 
@@ -129,26 +129,33 @@ function startAnnouncementListener() {
 
 
 document.addEventListener('DOMContentLoaded', () => {
+  firebase.auth().onAuthStateChanged(user => {
     const savedTime = localStorage.getItem(LOGIN_KEY);
     const now = Date.now();
 
-    firebase.auth().onAuthStateChanged(user => {
-        if (user && savedTime) {
-            const diffMins = (now - parseInt(savedTime)) / (1000 * 60);
-            if (diffMins <= LOGIN_EXPIRY_MINUTES) {
-                document.getElementById("loginSection").classList.add("hidden");
-                document.getElementById("dashboard").classList.remove("hidden");
-                startAttendanceListener();
-                loadFeedbacks();
-                startAnnouncementListener(); // ← ADD THIS LINE HERE
-            } else {
-                localStorage.removeItem(LOGIN_KEY);
-                firebase.auth().signOut();
-            }
-        }
-    });
+    if (user && savedTime) {
+      const diffMins = (now - parseInt(savedTime)) / (1000 * 60);
 
+      if (diffMins <= LOGIN_EXPIRY_MINUTES) {
+        document.getElementById("loginSection").classList.add("hidden");
+        document.getElementById("dashboard").classList.remove("hidden");
+
+        startAttendanceListener();
+        loadFeedbacks();
+        startAnnouncementListener();
+      } else {
+        localStorage.removeItem(LOGIN_KEY);
+        firebase.auth().signOut();
+        document.getElementById("loginSection").classList.remove("hidden");
+        document.getElementById("dashboard").classList.add("hidden");
+      }
+    } else {
+      document.getElementById("loginSection").classList.remove("hidden");
+      document.getElementById("dashboard").classList.add("hidden");
+    }
+  });
 });
+
 
 function showNotification(msg) {
     notification.textContent = msg;
