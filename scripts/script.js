@@ -335,7 +335,12 @@ function startAttendanceListener() {
     });
 }
 
+let selectedDate = null;
 
+document.getElementById("datePicker").addEventListener("change", (e) => {
+    selectedDate = new Date(e.target.value);
+    renderFilteredTable(document.getElementById("searchInput").value.toLowerCase());
+});
 
 document.getElementById("searchInput").addEventListener("input", (e) => {
     const query = e.target.value.toLowerCase();
@@ -349,9 +354,23 @@ function renderFilteredTable(query = "") {
     tableBody.innerHTML = "";
 
     const filtered = allStudents.filter(({ data }) => {
-        const { name, studentNumber, strand, grade } = data;
+        const { name, studentNumber, strand, grade, loginTime } = data;
         const combined = `${name} ${studentNumber} ${strand} ${grade}`.toLowerCase();
-        return combined.includes(query);
+
+        // Apply text search
+        let matchesSearch = combined.includes(query);
+
+        // Apply date filter
+        let matchesDate = true;
+        if (selectedDate) {
+            const loginDate = new Date(loginTime);
+            matchesDate =
+                loginDate.getFullYear() === selectedDate.getFullYear() &&
+                loginDate.getMonth() === selectedDate.getMonth() &&
+                loginDate.getDate() === selectedDate.getDate();
+        }
+
+        return matchesSearch && matchesDate;
     });
 
     // Limit to visibleCount
@@ -365,7 +384,7 @@ function renderFilteredTable(query = "") {
         row.insertCell().textContent = strand || "N/A";
         row.insertCell().textContent = grade || "N/A";
         row.insertCell().textContent = loginTime ? new Date(loginTime).toLocaleString() : "N/A";
-        row.insertCell().textContent = logoutTime ? new Date(logoutTime).toLocaleString() : "—"; // 👈 NEW
+        row.insertCell().textContent = logoutTime ? new Date(logoutTime).toLocaleString() : "—";
 
         const actionCell = row.insertCell();
         const deleteBtn = document.createElement("button");
@@ -378,8 +397,7 @@ function renderFilteredTable(query = "") {
         actionCell.appendChild(deleteBtn);
     });
 
-
-    // Toggle See More button
+    // See More toggle
     const seeMoreBtn = document.getElementById("seeMoreBtn");
     if (filtered.length > 6) {
         seeMoreBtn.classList.remove("hidden");
@@ -388,9 +406,109 @@ function renderFilteredTable(query = "") {
         seeMoreBtn.classList.add("hidden");
     }
 
-    renderStatistics(filtered);
+    // Update total count
+    document.getElementById("totalLoggedIn").textContent =
+        `Total Logged-in Students: ${filtered.length}`;
 
+    // Calculate monthly total
+    let monthlyTotal = 0;
+    if (selectedDate) {
+        monthlyTotal = allStudents.filter(({ data }) => {
+            const loginDate = new Date(data.loginTime);
+            return (
+                loginDate.getFullYear() === selectedDate.getFullYear() &&
+                loginDate.getMonth() === selectedDate.getMonth()
+            );
+        }).length;
+    }
+    document.getElementById("monthlyTotal").textContent =
+        `Monthly Total: ${monthlyTotal} students`;
+
+    // Render stats
+    renderStatistics(filtered);
 }
+
+document.getElementById("downloadStatsBtn").addEventListener("click", () => {
+    if (!selectedDate) {
+        alert("Please select a date first!");
+        return;
+    }
+
+    // Get month + year
+    const year = selectedDate.getFullYear();
+    const month = selectedDate.toLocaleString("default", { month: "long" });
+
+    // Filter only students from that month
+    const monthlyStudents = allStudents.filter(({ data }) => {
+        const loginDate = new Date(data.loginTime);
+        return (
+            loginDate.getFullYear() === year &&
+            loginDate.getMonth() === selectedDate.getMonth()
+        );
+    });
+
+    if (monthlyStudents.length === 0) {
+        alert("No attendance records found for this month.");
+        return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Title
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text(`STI Library - Attendance Report`, 105, 20, { align: "center" });
+
+    // Subtitle
+    doc.setFontSize(14);
+    doc.text(`Month: ${month} ${year}`, 105, 30, { align: "center" });
+    doc.setFontSize(12);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 105, 37, { align: "center" });
+
+    // Table rows
+    const rows = monthlyStudents.map(({ data }) => [
+        data.name || "N/A",
+        data.studentNumber || "N/A",
+        data.strand || "N/A",
+        data.grade || "N/A",
+        data.loginTime ? new Date(data.loginTime).toLocaleString() : "N/A",
+        data.logoutTime ? new Date(data.logoutTime).toLocaleString() : "—"
+    ]);
+
+    // AutoTable
+    doc.autoTable({
+        startY: 45,
+        head: [["Name", "Student ID", "Strand", "Grade", "Check-In", "Check-Out"]],
+        body: rows,
+        theme: "grid",
+        styles: {
+            fontSize: 10,
+            halign: "center",
+            valign: "middle",
+        },
+        headStyles: {
+            fillColor: [74, 144, 226], // Blue header
+            textColor: [255, 255, 255],
+            fontStyle: "bold",
+        },
+        alternateRowStyles: { fillColor: [240, 248, 255] }, // light blue rows
+    });
+
+    // Monthly Total
+    let finalY = doc.lastAutoTable.finalY + 15;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.text(
+        `Monthly Total: ${monthlyStudents.length} students`,
+        105,
+        finalY,
+        { align: "center" }
+    );
+
+    // Save PDF
+    doc.save(`Attendance_${month}_${year}.pdf`);
+});
 
 let attendanceExpanded = false;
 

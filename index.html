@@ -10,6 +10,8 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
     <link rel="stylesheet" href="styles/css-main.css">
 </head>
 
@@ -30,8 +32,8 @@
 
     <div id="dashboard" class="container hidden">
         <h1>STI LIBRARY - Admin Dashboard</h1>
-        
-        <!-- Added announcement card with better styling -->
+
+        <!-- Announcement -->
         <div id="announcementCard" class="announcement-card hidden">
             <div class="announcement-header">
                 <span class="announcement-icon">📢</span>
@@ -44,30 +46,39 @@
             </div>
         </div>
 
-        <!-- Added search bar at the top -->
+        <!-- Search -->
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="🔍 Search by Name, ID, Strand, or Grade" class="search-input">
+            <input type="text" id="searchInput" placeholder="🔍 Search by Name, ID, Strand, or Grade"
+                class="search-input">
         </div>
 
-        <!-- Added statistics section with cards -->
+        <!-- Attendance Statistics -->
         <div class="stats-section">
-    <h2>Attendance Statistics</h2>
+            <h2>Attendance Statistics</h2>
 
-    <!-- Grade / Year group -->
-    <h3>By Grade Level / Year</h3>
-    <div class="stats-grid" id="gradeStatsGrid"  style="margin-bottom: 3vh;"></div>
+            <!-- NEW: Date Picker & Print Button -->
+            <div class="date-controls">
+                <label for="datePicker"><strong>Select Date:</strong></label>
+                <input type="date" id="datePicker" />
+                <button id="downloadStatsBtn">⬇️ Download Statistics</button>
+            </div>
+            <p id="monthlyTotal">Monthly Total: 0 students</p>
 
-    <hr class="divider"/>
+            <!-- Grade / Year group -->
+            <h3>By Grade Level / Year</h3>
+            <div class="stats-grid" id="gradeStatsGrid" style="margin-bottom: 3vh;"></div>
 
-    <!-- Strand / Course group -->
-    <h3>By Strand / Course</h3>
-    <div class="stats-grid" id="strandStatsGrid"></div>
-</div>
+            <hr class="divider" />
 
-        <!-- Enhanced attendance list section -->
+            <!-- Strand / Course group -->
+            <h3>By Strand / Course</h3>
+            <div class="stats-grid" id="strandStatsGrid"></div>
+        </div>
+
+        <!-- Attendance List -->
         <div class="attendance-section">
             <h2>Student Attendance List</h2>
-            
+
             <div class="attendance-info">
                 <p id="totalLoggedIn">Total Logged-in Students: 0</p>
             </div>
@@ -88,13 +99,13 @@
                     <tbody></tbody>
                 </table>
             </div>
-            
+
             <div class="button-container">
                 <button id="seeMoreBtn" class="see-more-btn hidden">🔽 See More</button>
             </div>
         </div>
 
-        <!-- Enhanced feedback section -->
+        <!-- Feedback Section -->
         <div class="feedback-section">
             <h2>Student Feedbacks</h2>
             <div class="table-container">
@@ -112,7 +123,7 @@
                     <tbody></tbody>
                 </table>
             </div>
-            
+
             <div class="button-container">
                 <button id="seeMoreFeedbackBtn" class="see-more-btn hidden">🔽 See More</button>
             </div>
@@ -120,7 +131,6 @@
     </div>
 
     <script src="scripts/script.js" defer></script>
-
 </body>
 
 </html>

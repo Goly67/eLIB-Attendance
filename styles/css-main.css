@@ -175,6 +175,34 @@ h2 {
   backdrop-filter: blur(10px);
 }
 
+.date-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.date-controls input[type="date"] {
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: none;
+  font-family: "Outfit", sans-serif;
+}
+
+#monthlyTotal {
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #ffd700;
+}
+
+#downloadStatsBtn {
+  background: linear-gradient(135deg, #4caf50, #2e7d32);
+  margin-left: 10px;
+}
+#downloadStatsBtn:hover {
+  background: linear-gradient(135deg, #2e7d32, #1b5e20);
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
