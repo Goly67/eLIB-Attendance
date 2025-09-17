@@ -518,7 +518,7 @@ document.getElementById("downloadStatsBtn").addEventListener("click", () => {
 
     // Save PDF
     doc.save(`Attendance_${month}_${year}.pdf`);
-    showNotification("Monthly statistic(s) has downloaded successfully!");
+    showNotification('Saved to Downloads folder: Attendance_${month}_${year}.pdf');
 });
 
 let attendanceExpanded = false;
@@ -600,4 +600,5 @@ document.getElementById("seeMoreFeedbackBtn")?.addEventListener("click", () => {
     visibleFeedbackCount = feedbackExpanded ? allFeedbacks.length : 6;
     renderFeedbackTable();
 });
+
 
