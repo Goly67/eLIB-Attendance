@@ -156,10 +156,20 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-
-function showNotification(msg) {
+function showNotification(msg, type = "error") {
     notification.textContent = msg;
-    notification.classList.add("show");
+    notification.classList.remove("success"); // reset
+    notification.classList.remove("show");    // reset animation
+
+    if (type === "success") {
+        notification.classList.add("success");
+    }
+
+    // Trigger show
+    setTimeout(() => {
+        notification.classList.add("show");
+    }, 10);
+
     setTimeout(() => {
         notification.classList.remove("show");
     }, 3000);
@@ -508,6 +518,7 @@ document.getElementById("downloadStatsBtn").addEventListener("click", () => {
 
     // Save PDF
     doc.save(`Attendance_${month}_${year}.pdf`);
+    showNotification("Monthly statistic file is downloading...");
 });
 
 let attendanceExpanded = false;

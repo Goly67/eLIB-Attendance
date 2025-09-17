@@ -195,6 +195,10 @@ h2 {
   color: #ffd700;
 }
 
+.notification.success {
+  background-color: #2ecc71; /* green */
+}
+
 #downloadStatsBtn {
   background: linear-gradient(135deg, #4caf50, #2e7d32);
   margin-left: 10px;
