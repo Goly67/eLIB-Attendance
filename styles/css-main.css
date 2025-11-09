@@ -37,19 +37,19 @@ body::after {
 .secondary-link-btn {
   display: inline-block;
   margin-top: 12px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 510;
   text-decoration: none;
   color: #ffd700;
   background: rgba(18, 3, 90, 0.804);
-  padding: 10px 14px;
+  padding: 12px 20px;
   border-radius: 8px;
   transition: all 0.3s ease;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
 .secondary-link-btn:hover {
-  background: rgba(44, 18, 178, 0.804);
+  background: rgba(51, 15, 231, 0.804);
   transform: translateY(-2px);
   color: #ffffff;
 }
