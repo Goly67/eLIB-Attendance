@@ -34,6 +34,26 @@ body::after {
   background: rgba(0, 0, 0, 0.5); /* dim overlay */
   z-index: -1; /* sits above background but behind content */
 }
+.secondary-link-btn {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: #ffd700;
+  background: rgba(18, 3, 90, 0.804);
+  padding: 10px 14px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.secondary-link-btn:hover {
+  background: rgba(44, 18, 178, 0.804);
+  transform: translateY(-2px);
+  color: #ffffff;
+}
+
 .notification {
   position: fixed;
   top: -100px;
