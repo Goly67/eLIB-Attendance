@@ -129,31 +129,31 @@ function startAnnouncementListener() {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  firebase.auth().onAuthStateChanged(user => {
-    const savedTime = localStorage.getItem(LOGIN_KEY);
-    const now = Date.now();
+    firebase.auth().onAuthStateChanged(user => {
+        const savedTime = localStorage.getItem(LOGIN_KEY);
+        const now = Date.now();
 
-    if (user && savedTime) {
-      const diffMins = (now - parseInt(savedTime)) / (1000 * 60);
+        if (user && savedTime) {
+            const diffMins = (now - parseInt(savedTime)) / (1000 * 60);
 
-      if (diffMins <= LOGIN_EXPIRY_MINUTES) {
-        document.getElementById("loginSection").classList.add("hidden");
-        document.getElementById("dashboard").classList.remove("hidden");
+            if (diffMins <= LOGIN_EXPIRY_MINUTES) {
+                document.getElementById("loginSection").classList.add("hidden");
+                document.getElementById("dashboard").classList.remove("hidden");
 
-        startAttendanceListener();
-        loadFeedbacks();
-        startAnnouncementListener();
-      } else {
-        localStorage.removeItem(LOGIN_KEY);
-        firebase.auth().signOut();
-        document.getElementById("loginSection").classList.remove("hidden");
-        document.getElementById("dashboard").classList.add("hidden");
-      }
-    } else {
-      document.getElementById("loginSection").classList.remove("hidden");
-      document.getElementById("dashboard").classList.add("hidden");
-    }
-  });
+                startAttendanceListener();
+                loadFeedbacks();
+                startAnnouncementListener();
+            } else {
+                localStorage.removeItem(LOGIN_KEY);
+                firebase.auth().signOut();
+                document.getElementById("loginSection").classList.remove("hidden");
+                document.getElementById("dashboard").classList.add("hidden");
+            }
+        } else {
+            document.getElementById("loginSection").classList.remove("hidden");
+            document.getElementById("dashboard").classList.add("hidden");
+        }
+    });
 });
 
 function showNotification(msg, type = "error") {
@@ -321,7 +321,7 @@ function login() {
 let allStudents = [];
 
 function startAttendanceListener() {
-    const dbRef = firebase.database().ref("StudentLogs");
+    const dbRef = firebase.database().ref("Students");
     dbRef.off();
 
     dbRef.on("value", (snapshot) => {
@@ -331,10 +331,16 @@ function startAttendanceListener() {
         allStudents = [];
 
         snapshot.forEach((studentSnap) => {
-            studentSnap.forEach((logSnap) => {
-                const student = logSnap.val();
-                allStudents.push({ snap: logSnap, data: student });
-            });
+            const studentData = studentSnap.val();
+            if (studentData.sessions) {
+                Object.keys(studentData.sessions).forEach(sessionId => {
+                    const session = studentData.sessions[sessionId];
+                    allStudents.push({ snap: studentSnap.child('sessions').child(sessionId), data: session });
+                });
+            } else {
+                // For students without sessions, still add them
+                allStudents.push({ snap: studentSnap, data: studentData });
+            }
         });
 
         // Sort by latest login
